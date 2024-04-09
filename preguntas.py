@@ -10,13 +10,13 @@ básicas.
 Utilice el archivo `data.csv` para resolver las preguntas.
 
 """
-def pregunta_01():
-    """Retorne la suma de la segunda columna.
+def pregunta_01():  
+    """
+    Retorne la suma de la segunda columna.
 
     Rta/
-    214
-    """
-
+    214 """
+   
     total = 0 #crear variable total que es la que va a sumar
     with open('data.csv','r') as file: #abrir archivo CSV
         for line in file: #crear bucle for itera sobre cada linea del archivo
@@ -26,11 +26,12 @@ def pregunta_01():
                 for number in numbers: #Iterar sobre los numeros
                     total+=int(number) #y sumarlos
     return total #despues de realizar todas las iteraciones devuelve el valor de total
-print (pregunta_01()) #muestra la respuesta
+#print (pregunta_01()) #muestra la respuesta
 
 
-def pregunta_02(): 
-    """Retorne la cantidad de registros por cada letra de la primera columna como la lista
+def pregunta_02():
+    """
+    Retorne la cantidad de registros por cada letra de la primera columna como la lista
     de tuplas (letra, cantidad), ordendas alfabéticamente.
 
     Rta/
@@ -52,11 +53,12 @@ def pregunta_02():
     orden = sorted(conteo.items(), key=lambda x: x[0]) #convierte la lista en una (tuplas) lista ordenada alfabeticamente
     return orden # Retornar la lista de tuplas ordenada
 resultado = pregunta_02() # Llamar a la función para obtener la cantidad de registros por cada letra
-print(resultado) # Imprimir el resultado
+#print(resultado) # Imprimir el resultado
 
 
-def pregunta_03():
-    """Retorne la suma de la columna 2 por cada letra de la primera columna como una lista
+def pregunta_03(): 
+    """
+    Retorne la suma de la columna 2 por cada letra de la primera columna como una lista
     de tuplas (letra, suma) ordendas alfabeticamente.
 
     Rta/
@@ -67,7 +69,7 @@ def pregunta_03():
         ("D", 31),
         ("E", 67),
     ]
-    """
+    """ 
     suma_conteo = {} #Lista para almacenar la suma correspondiente a cada letra
     with open('data.csv','r') as file: #Abrir archivo CSV
         for line in file: #Iterar sobre cada linea
@@ -80,10 +82,7 @@ def pregunta_03():
     return orden #Retornar la lista de tuplas ordenada
 conteo = pregunta_02() #calcular el conteo de registros por letra
 suma_conteo = pregunta_03() #calcular la suma de la columna 2 por letra
-print(suma_conteo) # imprimir el resultado 
-
-
-
+#print(suma_conteo) # imprimir el resultado 
 
 
 def pregunta_04(): 
@@ -118,10 +117,13 @@ def pregunta_04():
                 mes = parts_fecha[1]
                 conteo[mes] = conteo.get(mes, 0) + 1 #Condicional de conteo
     orden = sorted(conteo.items(), key=lambda x: x[0]) #convierte la lista en una (tuplas) lista ordenada alfabeticamente
-    registro.append(orden)
-    return registro
+    formato = [
+        (mes, count) for mes, count in orden
+    ]
+   
+    return formato
 registro = pregunta_04()
-print(registro) 
+#print(registro)
 
 
 def pregunta_05():
@@ -138,25 +140,29 @@ def pregunta_05():
     ]
     """
 
-    maximo = {} #Lista para almacenar maximos
-    minimo = {} #Lista para almacenar minimos
+    valores = []
     with open('data.csv','r') as file: #Abrir archivo CSV
         for line in file: #Iterar sobre cada linea
             parts = line.strip().split('\t') # Dividir la línea en componentes
             letra = parts[0][0] # Obtener la primera letra de la línea
-            columna_2 = int(parts[1]) #Convertir el numero en un entero
-            if letra not in maximo:
-                maximo[letra] = columna_2
-                minimo[letra] = columna_2
-            else:
-                maximo[letra] = max(maximo[letra], columna_2)
-                minimo[letra] = min(minimo[letra], columna_2)
-    orden_maximo = sorted(maximo.items(), key=lambda x: x[0]) #convierte la lista en una (tuplas) lista ordenada alfabeticamente
-    orden_minimo = sorted(minimo.items(), key=lambda x: x[0]) #convierte la lista en una (tuplas) lista ordenada alfabeticamente
-    return orden_maximo, orden_minimo #Retornar la lista de tuplas ordenada
-maximo, minimo = pregunta_05()
-for (letra_max, maximo), (letra_min, minimo) in zip(maximo, minimo):
-    print(f'("{letra_max}", {maximo}, {minimo})')
+            col2 = int(parts[1])
+            valores.append((letra,col2))
+            
+    resultados = []
+    for letra, valor in valores:
+        encontrado = False
+        for i, item in enumerate(resultados):
+            if item[0] == letra:
+                maximo, minimo = item[1], item[2]
+                resultados[i] = (letra, max(maximo, valor), min(minimo, valor))
+                encontrado = True
+                break
+        if not encontrado:
+            resultados.append((letra, valor, valor))
+    orden = sorted(resultados, key=lambda x: x[0])
+    return orden
+resultados = pregunta_05()
+#print(resultados) 
 
 
 def pregunta_06(): 
@@ -179,27 +185,27 @@ def pregunta_06():
         ("jjj", 5, 17),
     ]
     """
-    clave = {} #Lista para almacenar maximos y minimos
+    resultados = []
     with open('data.csv','r') as file: #Abrir archivo CSV
         for line in file: #Iterar sobre cada linea
             parts = line.strip().split('\t') # Dividir la línea en componentes
             diccionario = dict(item.split(':') for item in parts[4].split(','))
-            for cla, valor in diccionario.items():
+            for clave, valor in diccionario.items():
                 valor = int(valor)
-                if cla in clave:
-                    clave[cla].append(valor)
-                else:
-                    clave[cla] = [valor]
-    minimo = {cla: min(valores) for cla, valores in clave.items()}
-    maximo = {cla: max(valores) for cla, valores in clave.items()}
-    return minimo, maximo
-minimo, maximo = pregunta_06()
-for cla in sorted(minimo.keys()):
-    valorminimo = minimo[cla]
-    valormaximo = maximo[cla]
-    print(f" {cla}, {valorminimo}, {valormaximo}") 
+                encontrado = False
+                for i, item in enumerate(resultados):
+                    if item[0] == clave:
+                        minimo, maximo = item[1], item[2]
+                        resultados[i] = (clave, min(minimo, valor), max(maximo, valor))
+                        encontrado = True
+                        break
+                if not encontrado:
+                    resultados.append((clave, valor, valor))
+    resultados.sort(key=lambda x: x[0])
+    return resultados
+resultados = pregunta_06()
+#print(resultados)
 
-       
 
 def pregunta_07():
     """Retorne una lista de tuplas que asocien las columnas 0 y 1. Cada tupla contiene un
@@ -234,7 +240,7 @@ def pregunta_07():
     lista_tuplas = [(num, lista_letras[num]) for num in orden]
     return lista_tuplas
 resultado = pregunta_07()
-print(resultado) 
+#print(resultado) 
 
 
 def pregunta_08(): 
@@ -257,23 +263,27 @@ def pregunta_08():
         (9, ["A", "B", "C", "E"]),
     ]
     """ 
-    lista_letras = {} #Lista para almacenar las letras en f(#)
+    lista_letras = [] #Lista para almacenar las letras en f(#)
     with open('data.csv','r') as file: #Abrir archivo CSV
         for line in file: #Iterar sobre cada linea
             parts = line.strip().split('\t') # Dividir la línea en componentes
             numero = parts[1] #Obtener los numeros en la columna 2
-            letras = sorted(set(parts[0].split(','))) #Obtener las letras em la columna 1
-            if numero in lista_letras:
-                lista_letras[numero].extend(letra for letra in letras if letra not in lista_letras[numero])
-            else:
-                lista_letras[numero] = letras
-    orden = sorted(lista_letras.keys())
-    for num in orden:
-        lista_letras[num] = sorted(lista_letras[num])
-    lista_tuplas = [(num, lista_letras[num]) for num in orden]
+            letras = parts[0] #Obtener las letras em la columna 1
+            encontrado = False
+            for item in lista_letras:
+                if item[0] == numero:
+                    item[1].extend(letras)
+                    encontrado = True
+                    break
+            if not encontrado:
+                lista_letras.append([numero, list(letras)])
+    for item in lista_letras:
+            item[1] = sorted(set(item[1]))
+    lista_tuplas = [(valor, letra) for valor, letra in lista_letras]
+    lista_tuplas.sort(key = lambda x: x[0])
     return lista_tuplas
 resultado = pregunta_08()
-print(resultado)  
+#print(resultado)
 
 
 def pregunta_09(): 
@@ -307,7 +317,7 @@ def pregunta_09():
     orden = {k: v for k, v in sorted(clave.items())}
     return orden
 resultado = pregunta_09()
-print(resultado) 
+#print(resultado) 
 
 def pregunta_10(): 
     """Retorne una lista de tuplas contengan por cada tupla, la letra de la columna 1 y la
@@ -335,7 +345,7 @@ def pregunta_10():
             lista.append((letra, c4, c5))
     return lista
 resultado = pregunta_10()
-print(resultado)
+#print(resultado)
 
 
 def pregunta_11():
@@ -367,7 +377,7 @@ def pregunta_11():
     orden = dict(sorted(suma.items()))
     return orden
 resultado = pregunta_11()
-print(resultado)
+#print(resultado)
 
 
 def pregunta_12():
@@ -382,25 +392,25 @@ def pregunta_12():
         'C': 114,
         'D': 136,
         'E': 324
-    }
-    """
+    } """
+    
     suma_fila = {}
     with open('data.csv','r') as file: #Abrir archivo CSV
         for line in file: #Iterar sobre cada linea
-            suma = 0
             parts = line.strip().split('\t') # Dividir la línea en componentes
             letra = parts[0]
             pares = parts[4].split(',')
+            
             for par in pares:
-                clave, valor = par.split(':')
-                suma += int(valor)
-            if letra in suma_fila:
-                suma_fila[letra].append(suma)
-            else:
-                suma_fila[letra] = [suma]  # Crear una nueva lista para la primera aparición de la letra
-    
-    return suma_fila
+                _, numero = par.split(':')
+                numero = int(numero)
+                
+                if letra in suma_fila:
+                    suma_fila[letra] += numero
+                else:
+                    suma_fila[letra] = numero
+    orden = dict(sorted(suma_fila.items()))
+    return orden
 
-resultado = pregunta_12()
-for letra, sumas in sorted(resultado.items()):
-    print(f"{letra}: {sum(sumas)}")
+resultado = pregunta_12() 
+#print(resultado)
