@@ -226,19 +226,22 @@ def pregunta_07():
         (9, ["A", "B", "E", "A", "A", "C"]),
     ]
     """
-    lista_letras = {} #Lista para almacenar las letras en f(#)
+    lista_letras = [] #Lista para almacenar las letras en f(#)
     with open('data.csv','r') as file: #Abrir archivo CSV
         for line in file: #Iterar sobre cada linea
             parts = line.strip().split('\t') # Dividir la línea en componentes
-            numero = parts[1] #Obtener los numeros en la columna 2
-            letras = parts[0] #Obtener las letras em la columna 1
-            if numero in lista_letras:
-                lista_letras[numero].extend(letras.split(','))
-            else:
-                lista_letras[numero] = letras.split(',')
-    orden = sorted(lista_letras.keys())
-    lista_tuplas = [(num, lista_letras[num]) for num in orden]
-    return lista_tuplas
+            numero = int(parts[1]) #Obtener los numeros en la columna 2
+            letras = parts[0].split(',') #Obtener las letras em la columna 1
+            encontrado = False
+            for item in lista_letras:
+                if item[0] == numero:
+                    item[1].extend(letras)
+                    encontrado = True
+                    break
+            if not encontrado:
+                lista_letras.append((numero, letras))
+    lista_letras.sort(key = lambda x: x[0])
+    return lista_letras
 resultado = pregunta_07()
 #print(resultado) 
 
