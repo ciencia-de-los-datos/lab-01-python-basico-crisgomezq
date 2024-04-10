@@ -270,7 +270,7 @@ def pregunta_08():
     with open('data.csv','r') as file: #Abrir archivo CSV
         for line in file: #Iterar sobre cada linea
             parts = line.strip().split('\t') # Dividir la línea en componentes
-            numero = parts[1] #Obtener los numeros en la columna 2
+            numero = int(parts[1]) #Obtener los numeros en la columna 2
             letras = parts[0] #Obtener las letras em la columna 1
             encontrado = False
             for item in lista_letras:
